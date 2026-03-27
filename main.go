@@ -6,6 +6,7 @@ import (
 	"main/src/chat"
 	"main/src/common"
 	"main/src/friend"
+	"main/src/room"
 	"main/src/user"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,9 @@ func main() {
 	userRepo := user.NewRepository(db)
 	userCtrl := user.NewController(userRepo)
 	authCtrl := auth.NewController(userRepo)
+
+	roomRepo := room.NewRepository(db)
+	roomCtrl := room.NewController(roomRepo)
 
 	friendRepo := friend.NewRepository(db)
 	friendCtrl := friend.NewController(friendRepo)
@@ -38,6 +42,7 @@ func main() {
 	r.POST("/api/friend/refuse", auth.JWTMiddleware(), friendCtrl.RefuseRequest)
 	r.GET("/api/friend/list", auth.JWTMiddleware(), friendCtrl.ListFriends)
 	r.GET("/ws", chat.ServerWS)
+	r.POST("/api/room", auth.JWTMiddleware(), roomCtrl.Create)
 
 	port := common.GetEnv("PORT")
 	fmt.Println("Server is running at http://localhost" + port)
