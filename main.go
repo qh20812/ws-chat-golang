@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"main/src/auth"
+	"main/src/chat"
 	"main/src/common"
 	"main/src/friend"
 	"main/src/user"
@@ -13,7 +14,7 @@ import (
 func main() {
 	common.LoadEnv()
 
-	db:= common.ConnectMongoDB()
+	db := common.ConnectMongoDB()
 
 	userRepo := user.NewRepository(db)
 	userCtrl := user.NewController(userRepo)
@@ -21,6 +22,8 @@ func main() {
 
 	friendRepo := friend.NewRepository(db)
 	friendCtrl := friend.NewController(friendRepo)
+
+	go chat.WS.Run()
 
 	r := gin.Default()
 
@@ -34,6 +37,7 @@ func main() {
 	r.POST("/api/friend/accept", auth.JWTMiddleware(), friendCtrl.AcceptRequest)
 	r.POST("/api/friend/refuse", auth.JWTMiddleware(), friendCtrl.RefuseRequest)
 	r.GET("/api/friend/list", auth.JWTMiddleware(), friendCtrl.ListFriends)
+	r.GET("/ws", chat.ServerWS)
 
 	port := common.GetEnv("PORT")
 	fmt.Println("Server is running at http://localhost" + port)
