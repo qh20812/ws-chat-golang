@@ -17,7 +17,7 @@ func NewPresenceTracker() *PresenceTracker {
 	}
 }
 
-func (pt *PresenceTracker) join(roomID, userID string) {
+func (pt *PresenceTracker) Join(roomID, userID string) {
 	pt.mu.Lock()
 	defer pt.mu.Unlock()
 	if pt.online[roomID] == nil {
@@ -26,7 +26,7 @@ func (pt *PresenceTracker) join(roomID, userID string) {
 	pt.online[roomID][userID] = true
 }
 
-func (pt *PresenceTracker) leave(roomID, userID string) {
+func (pt *PresenceTracker) Leave(roomID, userID string) {
 	pt.mu.Lock()
 	defer pt.mu.Unlock()
 	if pt.online[roomID] != nil {

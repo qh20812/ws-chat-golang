@@ -33,6 +33,12 @@ func (r *Repository) createRoom(name string, ownerID bson.ObjectID) (*Room, erro
 	return room, nil
 }
 
-func (r *Repository) getRoom() {
-	// Homework
+// homework: hàm lấy danh sách phòng của người dùng
+func (r *Repository) getRoom(ownerID bson.ObjectID)(*Room, error) {
+	var room Room
+	err := r.Rooms.FindOne(context.TODO(), bson.M{"owner_id": ownerID}).Decode(&room)
+	if err != nil {
+		return nil, err
+	}
+	return &room, nil
 }

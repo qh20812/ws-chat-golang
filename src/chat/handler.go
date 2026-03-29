@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"main/src/common"
+	"main/src/room"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,10 @@ func ServerWS(c *gin.Context) {
 		RoomID: roomID,
 		Send:   make(chan []byte),
 	}
+
+	// add user to room presence
+	room.RoomMembers.Join(roomID, userID)
+	defer room.RoomMembers.Leave(roomID, userID)
 
 	WS.Register <- client
 

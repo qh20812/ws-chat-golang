@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"main/src/auth"
 	"main/src/chat"
 	"main/src/common"
 	"main/src/friend"
+	"main/src/notify"
 	"main/src/room"
 	"main/src/user"
 
@@ -22,12 +24,17 @@ func main() {
 	authCtrl := auth.NewController(userRepo)
 
 	roomRepo := room.NewRepository(db)
+	room.EnsureRoomIndex(roomRepo.Rooms)
+	if err := room.EnsureRoomIndex(roomRepo.Rooms); err != nil {
+		log.Fatal("Can not create index because index exist!")
+	}
 	roomCtrl := room.NewController(roomRepo)
 
 	friendRepo := friend.NewRepository(db)
 	friendCtrl := friend.NewController(friendRepo)
 
 	go chat.WS.Run()
+	go notify.NotifyWS.Run()
 
 	r := gin.Default()
 
@@ -43,6 +50,8 @@ func main() {
 	r.GET("/api/friend/list", auth.JWTMiddleware(), friendCtrl.ListFriends)
 	r.GET("/ws", chat.ServerWS)
 	r.POST("/api/room", auth.JWTMiddleware(), roomCtrl.Create)
+	r.GET("/api/room", auth.JWTMiddleware(), roomCtrl.GetRoom)
+	r.GET("/ws/notify", notify.ServerWS)
 
 	port := common.GetEnv("PORT")
 	fmt.Println("Server is running at http://localhost" + port)

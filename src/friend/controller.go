@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"main/src/auth"
+	"main/src/notify"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
@@ -52,6 +54,10 @@ func (ctrl *FriendController) SendRequest(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send friend request"})
 		return
 	}
+
+	//gui notify cho nguoi nhan
+	notify.SendToUser(toObjID.Hex(), "You have a new friend request!")
+
 	c.JSON(http.StatusOK, gin.H{"message": "Request sent successfully"})
 }
 
@@ -74,6 +80,15 @@ func (ctrl *FriendController) AcceptRequest(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to accept friend request"})
 		return
 	}
+
+	req, err := ctrl.Repo.GetRequestByID(requestID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get friend request"})
+		return
+	}
+
+	notify.SendToUser(req.FromUserID.Hex(), "Your friend request has been accepted!")
+
 	c.JSON(http.StatusOK, gin.H{"message": "Request accepted successfully"})
 }
 
