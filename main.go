@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"main/src/auth"
+	"main/src/callsignal"
 	"main/src/chat"
 	"main/src/common"
 	"main/src/friend"
@@ -52,6 +53,7 @@ func main() {
 	r.POST("/api/room", auth.JWTMiddleware(), roomCtrl.Create)
 	r.GET("/api/room", auth.JWTMiddleware(), roomCtrl.GetRoom)
 	r.GET("/ws/notify", notify.ServerWS)
+	r.GET("/ws/signaling", callsignal.ServeSignalingWS)
 
 	port := common.GetEnv("PORT")
 	fmt.Println("Server is running at http://localhost" + port)
