@@ -36,17 +36,42 @@ func ServerWS(c *gin.Context) {
 
 	// add user to room presence
 	room.RoomMembers.Join(roomID, userID)
-	defer room.RoomMembers.Leave(roomID, userID)
 
 	WS.Register <- client
 
+	joinMsg, _ := json.Marshal(map[string]any{
+		"type":    "join",
+		"room_id": roomID,
+		"user_id": userID,
+		"users":   room.RoomMembers.GetUsers(roomID),
+	})
+
+	WS.Broadcast <- &MessagePayload{
+		RoomID:  roomID,
+		Message: joinMsg,
+	}
+
 	go client.ReadPump()
-	go client.WritePump()
+	client.WritePump()
 }
 
 func (c *Client) ReadPump() {
 	chatRepo := NewRepository(common.ConnectMongoDB())
 	defer func() {
+		room.RoomMembers.Leave(c.RoomID, c.UserID)
+		WS.UnRegister <- c
+
+		leaveMsg, _ := json.Marshal(map[string]any{
+			"type":    "leave",
+			"room_id": c.RoomID,
+			"user_id": c.UserID,
+			"users":   room.RoomMembers.GetUsers(c.RoomID),
+		})
+		WS.Broadcast <- &MessagePayload{
+			RoomID:  c.RoomID,
+			Message: leaveMsg,
+		}
+
 		WS.UnRegister <- c
 		c.Conn.Close()
 	}()
