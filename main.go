@@ -54,8 +54,14 @@ func main() {
 	r.GET("/api/room", auth.JWTMiddleware(), roomCtrl.GetRoom)
 	r.GET("/ws/notify", notify.ServerWS)
 	r.GET("/ws/signaling", callsignal.ServeSignalingWS)
+	r.Static("/ui", "./ui")
 
 	port := common.GetEnv("PORT")
-	fmt.Println("Server is running at http://localhost" + port)
-	r.Run(port)
+	fmt.Println("Server is running at http://" + common.GetEnv("HOST") + port)
+	// r.Run(port)
+
+	err:=r.RunTLS(port, "cert.pem", "key.pem")
+	if err!=nil{
+		log.Fatal("Failed to start server: ", err)
+	}
 }
