@@ -1,0 +1,283 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: "Segoe UI", Roboto, Arial, sans-serif;
+	background: #f1f6ff;
+	color: #1b2942;
+}
+
+.main-nav {
+	display: flex;
+	gap: 10px;
+	background: #1d62c9;
+	padding: 10px 16px;
+	align-items: center;
+}
+
+.main-nav a {
+	color: #fff;
+	text-decoration: none;
+	font-weight: 600;
+	padding: 6px 10px;
+	border-radius: 8px;
+}
+
+.main-nav a:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.main-nav .active {
+	background: rgba(255, 255, 255, 0.28);
+}
+
+#navLogout {
+	margin-left: auto;
+	background: #da4a4a;
+}
+
+.app-shell {
+	display: grid;
+	grid-template-columns: 360px 1fr;
+	gap: 18px;
+	max-width: 1200px;
+	margin: 16px auto;
+	padding: 0 16px 16px;
+}
+
+.control-panel,
+.video-panel {
+	background: #fff;
+	border: 1px solid #d6e0f1;
+	border-radius: 14px;
+	box-shadow: 0 10px 24px rgba(22, 41, 74, 0.09);
+}
+
+.control-panel {
+	padding: 18px;
+}
+
+.panel-head h1 {
+	margin: 0;
+	font-size: 1.55rem;
+	color: #113d73;
+}
+
+.panel-head p {
+	margin: 8px 0 14px;
+	color: #5c7296;
+}
+
+.current-user {
+	background: #edf4ff;
+	border: 1px solid #c7d7ef;
+	color: #244978;
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 12px;
+	font-size: 0.92rem;
+}
+
+.field {
+	margin-bottom: 14px;
+}
+
+.field label {
+	display: block;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+
+.field select {
+	width: 100%;
+	height: 42px;
+	border: 1px solid #c6d5ea;
+	border-radius: 10px;
+	padding: 0 10px;
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.btn {
+	border: none;
+	border-radius: 10px;
+	height: 42px;
+	padding: 0 14px;
+	color: #fff;
+	background: #1f62ce;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.btn:hover {
+	filter: brightness(1.05);
+}
+
+.btn-soft {
+	background: #5f7695;
+}
+
+.btn-primary {
+	background: linear-gradient(120deg, #1768f2, #1f6df9);
+}
+
+.status-panel {
+	margin-top: 16px;
+}
+
+.status-panel h2 {
+	font-size: 1rem;
+	margin: 0 0 8px;
+}
+
+.status-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 8px;
+}
+
+.status-pill {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 34px;
+	border-radius: 999px;
+	font-weight: 700;
+	padding: 0 12px;
+	font-size: 0.88rem;
+}
+
+.status-pill.success {
+	background: #dff7e7;
+	color: #16713c;
+}
+
+.status-pill.error {
+	background: #ffe3e3;
+	color: #a22525;
+}
+
+.status-pill.neutral {
+	background: #e9eef8;
+	color: #3e5577;
+}
+
+.event-feed {
+	margin-top: 10px;
+	display: grid;
+	gap: 6px;
+}
+
+.event-item {
+	font-size: 0.86rem;
+	border-radius: 8px;
+	padding: 7px 9px;
+}
+
+.event-item.success {
+	background: #e5f8eb;
+	color: #196c37;
+}
+
+.event-item.error {
+	background: #ffe7e7;
+	color: #992323;
+}
+
+.event-item.neutral {
+	background: #eef3fa;
+	color: #41597b;
+}
+
+.video-panel {
+	padding: 14px;
+}
+
+.video-stage {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	min-height: 280px;
+	max-height: 78vh;
+	background: #0f1c2f;
+	border-radius: 14px;
+	overflow: hidden;
+}
+
+#remoteVideo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	background: #09111f;
+}
+
+.local-preview {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: clamp(110px, 23%, 220px);
+	aspect-ratio: 3 / 4;
+	border-radius: 12px;
+	overflow: hidden;
+	border: 2px solid rgba(255, 255, 255, 0.75);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+	cursor: grab;
+	touch-action: none;
+}
+
+.local-preview.dragging {
+	cursor: grabbing;
+}
+
+.preview-title {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1;
+	background: rgba(0, 0, 0, 0.45);
+	color: #fff;
+	font-size: 0.78rem;
+	padding: 4px 8px;
+}
+
+#localVideo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	background: #111b2e;
+}
+
+.hangup-btn {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+	border: none;
+	border-radius: 999px;
+	background: #e13e3e;
+	color: #fff;
+	font-weight: 700;
+	padding: 10px 16px;
+	cursor: pointer;
+	box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.hangup-btn:hover {
+	filter: brightness(1.05);
+}
+
+@media (max-width: 900px) {
+	.app-shell {
+		grid-template-columns: 1fr;
+	}
+
+	.video-stage {
+		min-height: 220px;
+	}
+}

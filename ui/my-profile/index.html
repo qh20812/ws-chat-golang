@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="/ui/index.html">Trang chính</a>
+        <a href="/ui/my-profile/index.html">Hồ sơ</a>
+        <a href="/ui/list-friends/index.html">Bạn bè</a>
+        <a href="/ui/login/index.html" id="navLogout">Đăng xuất</a>
+    </nav>
+    <main class="profile-page">
+        <header class="profile-header">
+            <h1>Trang cá nhân</h1>
+            <p>Thông tin người dùng và các hành động liên quan</p>
+        </header>
+
+        <section class="profile-card">
+            <div class="profile-details">
+                <h2 id="username">John Doe</h2>
+                <p id="email"><strong>Email:</strong> john.doe@example.com</p>
+                <p id="joined"><strong>Ngày tạo:</strong> --/--/----</p>
+            </div>
+        </section>
+
+        <section class="profile-actions">
+            <button id="editProfileBtn" class="btn action-btn">Chỉnh sửa hồ sơ</button>
+            <button id="friendsListBtn" class="btn action-btn">Danh sách bạn bè</button>
+            <button id="logoutBtn" class="btn action-btn btn-danger">Đăng xuất</button>
+        </section>
+
+        <!-- Modal edit profile -->
+        <div id="editModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <article class="modal-content" role="document">
+                <header class="modal-header">
+                    <h2 id="modalTitle">Chỉnh sửa hồ sơ</h2>
+                    <button id="closeModalBtn" class="modal-close" aria-label="Đóng">×</button>
+                </header>
+                <form id="editProfileForm" class="modal-form" autocomplete="off">
+                    <div class="modal-group">
+                        <label for="editUsername">Tên</label>
+                        <input type="text" id="editUsername" name="username" required />
+                    </div>
+                    <div class="modal-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" id="editEmail" name="email" required />
+                    </div>
+                    <div class="modal-group">
+                        <label for="editPassword">Mật khẩu mới</label>
+                        <input type="password" id="editPassword" name="password" placeholder="Để trống nếu không đổi" />
+                    </div>
+                    <div class="modal-actions">
+                        <button id="saveProfileBtn" class="btn" type="submit">Lưu thay đổi</button>
+                        <button id="cancelProfileBtn" class="btn btn-secondary" type="button">Hủy</button>
+                    </div>
+                    <p id="modalMessage" class="modal-message" aria-live="polite"></p>
+                </form>
+            </article>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

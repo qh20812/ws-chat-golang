@@ -3,55 +3,64 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css">
-    <title>Call Signal</title>
+    <link rel="stylesheet" href="style.css" />
+    <title>Gọi video</title>
   </head>
   <body>
-    <h1>Call Signaling</h1>
-    <div>
-      <label>My User ID:</label>
-      <input id="myId" placeholder="UserID 01" type="text" />
-    </div>
-    <br />
-    <div>
-      <label>Target User ID to call:</label>
-      <input id="targetId" placeholder="UserID 02" type="text" />
-    </div>
-    <br />
-    <div>
-      <button id="connectBtn">Signaling connection</button>
-      <button id="startCameraBtn">Activate camera</button>
-      <button id="callBtn">Start calling</button>
-      <button id="hangUpBtn">Hang up the call</button>
-    </div>
-    <br />
-    <div>
-      <p>Call Signaling status</p>
-      <pre id="log"></pre>
-    </div>
-    <br />
-    <div>
-      <h3>Local Video</h3>
-      <video
-        id="localVideo"
-        autoplay
-        playsinline
-        width="320"
-        height="240"
-      ></video>
-    </div>
-    <br>
-    <div>
-      <h3>Remote Video</h3>
-      <video
-        id="remoteVideo"
-        autoplay
-        playsinline
-        
-        width="320"
-        height="240"
-      ></video>
-    </div>
+    <nav class="main-nav">
+      <a href="/ui/index.html" class="active">Trang chính</a>
+      <a href="/ui/my-profile/index.html">Hồ sơ</a>
+      <a href="/ui/list-friends/index.html">Bạn bè</a>
+      <a href="/ui/login/index.html" id="navLogout">Đăng xuất</a>
+    </nav>
+
+    <main class="app-shell">
+      <section class="control-panel">
+        <div class="panel-head">
+          <h1>Gọi video</h1>
+          <p>Chọn bạn bè rồi bắt đầu cuộc gọi nhanh.</p>
+        </div>
+
+<div class="current-user" id="myIdentity">Đang tải thông tin...</div>
+
+        <div class="field">
+          <label for="friendSelect">Bạn muốn gọi</label>
+          <select id="friendSelect">
+            <option value="">-- Chọn bạn bè --</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button id="connectBtn" class="btn">Kết nối signaling</button>
+          <button id="startCameraBtn" class="btn btn-soft">Bật camera</button>
+          <button id="callBtn" class="btn btn-primary">Gọi</button>
+        </div>
+
+        <section class="status-panel">
+          <h2>Trạng thái</h2>
+          <div class="status-grid">
+            <span id="wsStatus" class="status-pill neutral">Kết nối: Chưa</span>
+            <span id="cameraStatus" class="status-pill neutral">Camera: Tắt</span>
+            <span id="callStatus" class="status-pill neutral">Cuộc gọi: Chưa</span>
+          </div>
+          <div id="eventFeed" class="event-feed"></div>
+        </section>
+      </section>
+
+      <section class="video-panel">
+        <div class="video-stage" id="videoStage">
+          <video id="remoteVideo" autoplay playsinline></video>
+
+          <div id="localPreview" class="local-preview">
+            <div class="preview-title">You</div>
+            <video id="localVideo" autoplay muted playsinline></video>
+          </div>
+
+          <button id="hangUpBtn" class="hangup-btn">Cúp máy</button>
+        </div>
+      </section>
+    </main>
+
     <script src="./index.js"></script>
   </body>
 </html>

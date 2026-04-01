@@ -14,6 +14,8 @@ type Repository struct {
 	Collection *mongo.Collection
 }
 
+
+
 func NewRepository(db *mongo.Database) *Repository {
 	collection := db.Collection("users")
 	if err := CreateUserIndexes(collection); err != nil {
@@ -38,6 +40,25 @@ func (r *Repository) Create(user *User) error {
 func (r *Repository) FindByEmail(email string) (*User, error) {
 	var user User
 	err := r.Collection.FindOne(context.TODO(), bson.M{"email": email}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *Repository) FindByUsername(username string) (*User, error) {
+	var user User
+	err := r.Collection.FindOne(context.TODO(), bson.M{"username": username}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *Repository) FindByUsernameOrEmail(query string) (*User, error) {
+	var user User
+	filter := bson.M{"$or": []bson.M{{"username": query}, {"email": query}}}
+	err := r.Collection.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
 		return nil, err
 	}

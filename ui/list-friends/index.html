@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách bạn bè</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="/ui/index.html">Trang chính</a>
+        <a href="/ui/my-profile/index.html">Hồ sơ</a>
+        <a href="/ui/list-friends/index.html">Bạn bè</a>
+        <a href="/ui/login/index.html" id="navLogout">Đăng xuất</a>
+    </nav>
+    <main class="friends-page">
+        <header class="friends-header">
+            <h1>Danh sách bạn bè (<span id="friendsCount">0</span>)</h1>
+            <p>Quản lý bạn bè, chấp nhận và từ chối yêu cầu kết bạn</p>
+        </header>
+
+        <section class="add-friend-section">
+            <label for="searchTarget">Tìm bạn bằng Username hoặc Email</label>
+            <div class="search-row">
+                <input id="searchTarget" type="text" placeholder="Nhập username hoặc email" />
+                <button id="searchBtn" class="btn">Tìm</button>
+            </div>
+            <div id="searchResult" class="search-result" aria-live="polite"></div>
+            <button id="addFriendBtn" class="btn btn-secondary" style="display:none; margin-top: 8px;">Thêm bạn</button>
+        </section>
+
+        <section class="friends-list-section">
+            <ul id="friendsList" class="friends-list" aria-live="polite">
+                <li class="empty-state" id="noFriends">Bạn chưa có bạn bè nào. Hãy mời một người!</li>
+                <!-- Danh sách bạn bè sẽ được tải vào đây -->
+            </ul>
+        </section>
+
+        <section class="friend-requests-section">
+            <h2>Yêu cầu kết bạn</h2>
+            <ul id="friendRequestsList" class="friend-requests-list">
+                <li class="empty-state" id="noRequests">Không có yêu cầu nào.</li>
+            </ul>
+        </section>
+
+        <div id="friendActionMessage" class="action-message" aria-live="assertive"></div>
+
+        <!-- Modal xác nhận hành động -->
+        <div id="requestModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <article class="modal-content" role="document">
+                <header class="modal-header">
+                    <h3 id="modalTitle">Xác nhận</h3>
+                    <button id="closeModalBtn" class="modal-close" aria-label="Đóng">×</button>
+                </header>
+                <p id="modalText">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+                <div class="modal-actions">
+                    <button id="confirmBtn" class="btn">Xác nhận</button>
+                    <button id="cancelBtn" class="btn btn-secondary">Hủy</button>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

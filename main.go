@@ -32,7 +32,7 @@ func main() {
 	roomCtrl := room.NewController(roomRepo)
 
 	friendRepo := friend.NewRepository(db)
-	friendCtrl := friend.NewController(friendRepo)
+	friendCtrl := friend.NewController(friendRepo, userRepo)
 
 	go chat.WS.Run()
 	go notify.NotifyWS.Run()
@@ -49,6 +49,10 @@ func main() {
 	r.POST("/api/friend/accept", auth.JWTMiddleware(), friendCtrl.AcceptRequest)
 	r.POST("/api/friend/refuse", auth.JWTMiddleware(), friendCtrl.RefuseRequest)
 	r.GET("/api/friend/list", auth.JWTMiddleware(), friendCtrl.ListFriends)
+	r.GET("/api/friend/requests", auth.JWTMiddleware(), friendCtrl.ListRequests)
+	r.GET("/api/myprofile", auth.JWTMiddleware(), authCtrl.MyProfile)
+	r.GET("/api/friend/myfriends", auth.JWTMiddleware(), friendCtrl.ListMyFriends)
+	r.GET("/api/user/search", auth.JWTMiddleware(), userCtrl.SearchUser)
 	r.GET("/ws", chat.ServerWS)
 	r.POST("/api/room", auth.JWTMiddleware(), roomCtrl.Create)
 	r.GET("/api/room", auth.JWTMiddleware(), roomCtrl.GetRoom)
@@ -60,8 +64,8 @@ func main() {
 	fmt.Println("Server is running at http://" + common.GetEnv("HOST") + port)
 	// r.Run(port)
 
-	err:=r.RunTLS(port, "cert.pem", "key.pem")
-	if err!=nil{
+	err := r.RunTLS(port, "cert.pem", "key.pem")
+	if err != nil {
 		log.Fatal("Failed to start server: ", err)
 	}
 }

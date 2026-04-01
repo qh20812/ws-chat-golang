@@ -91,6 +91,20 @@ func (r *Repository) RefuseRequest(requestID bson.ObjectID) error {
 	return err
 }
 
+func (r *Repository) ListPendingRequests(toUserID bson.ObjectID) ([]FriendRequest, error) {
+	cursor, err := r.FriendRequest.Find(context.TODO(), bson.M{"to_user_id": toUserID, "status": "pending"})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var requests []FriendRequest
+	if err := cursor.All(context.TODO(), &requests); err != nil {
+		return nil, err
+	}
+	return requests, nil
+}
+
 func (r *Repository) GetRequestByID(id bson.ObjectID) (*FriendRequest, error) {
 	var req FriendRequest
 	err := r.FriendRequest.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&req)

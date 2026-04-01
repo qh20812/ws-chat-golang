@@ -3,9 +3,11 @@ package user
 import (
 	"main/src/common"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type Controller struct {
@@ -92,4 +94,24 @@ func (ctrl *Controller) UpdateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
+}
+
+func (ctrl *Controller) SearchUser(c *gin.Context) {
+	query := strings.TrimSpace(c.Query("q"))
+	if query == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Query cannot be empty"})
+		return
+	}
+
+	user, err := ctrl.Repo.FindByUsernameOrEmail(query)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to search user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": gin.H{"id": user.ID.Hex(), "username": user.Username, "email": user.Email}})
 }

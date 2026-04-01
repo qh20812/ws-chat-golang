@@ -5,17 +5,19 @@ import (
 
 	"main/src/auth"
 	"main/src/notify"
+	"main/src/user"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 type FriendController struct {
-	Repo *Repository
+	Repo     *Repository
+	UserRepo *user.Repository
 }
 
-func NewController(repo *Repository) *FriendController {
-	return &FriendController{Repo: repo}
+func NewController(repo *Repository, userRepo *user.Repository) *FriendController {
+	return &FriendController{Repo: repo, UserRepo: userRepo}
 }
 
 func (ctrl *FriendController) SendRequest(c *gin.Context) {
@@ -144,4 +146,91 @@ func (ctrl *FriendController) RefuseRequest(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Friend request refused"})
+}
+
+func (ctrl *FriendController) ListMyFriends(c *gin.Context) {
+	userIDValue, exists := c.Get(auth.UserIDKey)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userIDStr, ok := userIDValue.(string)
+	if !ok || userIDStr == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user id"})
+		return
+	}
+
+	userID, err := bson.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user id"})
+		return
+	}
+
+	friendIDs, err := ctrl.Repo.ListFriends(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load friends"})
+		return
+	}
+
+	if ctrl.UserRepo == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
+	users := ctrl.UserRepo.FindManyByID(friendIDs)
+	result := make([]gin.H, 0, len(users))
+	for _, u := range users {
+		result = append(result, gin.H{
+			"id":       u.ID.Hex(),
+			"username": u.Username,
+			"email":    u.Email,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"friends": result})
+}
+
+func (ctrl *FriendController) ListRequests(c *gin.Context) {
+	userIDValue, exists := c.Get(auth.UserIDKey)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userIDStr, ok := userIDValue.(string)
+	if !ok || userIDStr == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user id"})
+		return
+	}
+
+	userID, err := bson.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user id"})
+		return
+	}
+
+	requests, err := ctrl.Repo.ListPendingRequests(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load friend requests"})
+		return
+	}
+
+	result := make([]gin.H, 0, len(requests))
+	for _, req := range requests {
+		fromUser := ctrl.UserRepo.FindByID(req.FromUserID)
+		fromUsername := "Người dùng"
+		if fromUser != nil {
+			fromUsername = fromUser.Username
+		}
+
+		result = append(result, gin.H{
+			"id":            req.ID.Hex(),
+			"from_user_id":  req.FromUserID.Hex(),
+			"from_username": fromUsername,
+			"created_at":    req.CreatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"requests": result})
 }
